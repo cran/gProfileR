@@ -1,5 +1,5 @@
 Package: gProfileR
-Version: 0.2
+Version: 0.4
 License: GPL (>= 2)
 Description: A package for functional enrichment analysis via the
         g:Profiler toolkit (http://biit.cs.ut.ee/gprofiler/).
@@ -10,6 +10,7 @@ Maintainer: Tambet Arak <tambet.arak@gmail.com>
 Depends: R (>= 2.10)
 Imports: RCurl, plyr
 Collate: 'gProfileR.R'
-Packaged: 2012-11-22 13:38:39 UTC; arak
+Packaged: 2013-04-12 15:37:36 UTC; arak
+NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2012-11-22 18:35:04
+Date/Publication: 2013-04-12 18:05:15

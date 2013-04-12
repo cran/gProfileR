@@ -1,0 +1,21 @@
+
+v0.0.1
+
+- Initial release
+
+v0.2
+
+- Better interface to g:Profiler tools, support for most parameters available
+in the web interface
+- Submission to CRAN
+
+v0.3
+
+- Added PNG output to gprofiler()
+
+v0.4
+
+- Added the (get|set)_user_agent() functions
+- Bugfix: region queries now work properly in gprofiler() and gconvert()
+
+

@@ -17,8 +17,5 @@ the name and the family name. Example: human - 'hsapiens', mouse - 'mmusculus'.}
 \item{numeric_ns}{namespace to use for fully numeric IDs.}
 \item{df}{logical indicating whether the output will be a data.frame or list.}
 }
-\examples{gconvert(c("Klf4", "Pax5", "Sox2", "Nanog"), organism = "mmusculus")
-
-# Get all mouse Cell cycle genes 
-gconvert(c("GO:0007049"), organism = "mmusculus")}
+\examples{gconvert(c("POU5F1", "SOX2", "NANOG"), organism = "hsapiens", target="AFFY_HG_U133_PLUS_2")}
 

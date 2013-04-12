@@ -1,3 +1,15 @@
+
+gp_globals = new.env()
+
+gp_globals$version = 
+	sessionInfo("gProfileR")$otherPkgs$gProfileR$Version
+gp_globals$rcurl_opts =
+	RCurl::curlOptions(useragent = paste("gProfileR/", gp_globals$version, sep=""))
+gp_globals$png_magic =
+	as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))
+gp_globals$base_url = 
+	"http://biit.cs.ut.ee/gprofiler/"
+
 #' Find orthologs.
 #' 
 #' Interface to the g:Orth tool. Organism names are constructed by concatenating the first letter of 
@@ -21,6 +33,7 @@
 #' @examples
 #' gorth(c("Klf4", "Pax5", "Sox2", "Nanog"), source_organism = "mmusculus", target_organism = "hsapiens")
 #' @export
+
 gorth <- function(
 	query,
 	source_organism = "hsapiens",
@@ -30,12 +43,11 @@ gorth <- function(
 	mthreshold = 3,
 	df = T
 ){
-	my_url <- "http://biit.cs.ut.ee/gprofiler/gorth.cgi"
+	my_url = paste(gp_globals$base_url, "gorth.cgi", sep="")
 	
-	if(length(query) == 0) return(NULL)
+	if (length(query) == 0) return(NULL)
 	
-	rcurl_opts = RCurl::curlOptions(useragent = "gProfileR")
-	raw_query <- RCurl::postForm(my_url, .opts = rcurl_opts,
+	raw_query <- RCurl::postForm(my_url, .opts = gp_globals$rcurl_opts,
 		output = 'mini', 
 		query = paste(query, collapse = " "), 
 		organism = source_organism,
@@ -53,11 +65,11 @@ gorth <- function(
 	res = plyr::dlply(tab, "Source", function(x){
 		
 		x = x[x$V6 != "N/A",]
-		if(nrow(x) == 0){
+		if (nrow(x) == 0){
 			return(NULL)
 		}
 		
-		if(length(x$V6) < mthreshold + 1){
+		if (length(x$V6) < mthreshold + 1){
 			return(as.character(x$V6))
 		} 
 		else{
@@ -66,7 +78,8 @@ gorth <- function(
 	})
 	
 	if(df){
-		res <- plyr::ldply(res, function(x) data.frame(Target = x))
+		res <- plyr::ldply(res, function(x) data.frame(Target = x, stringsAsFactors = F))
+		res$Source = as.character(res$Source)
 	}
 	
 	return(res)
@@ -74,11 +87,15 @@ gorth <- function(
  
 #' Annotate gene list functionally.
 #' 
-#' Interface to the g:Profiler tool for finding enrichments in gene lists. Organism names are constructed by concatenating the first letter of 
-#' the name and the family name. Example: human - 'hsapiens', mouse - 'mmusculus'.
+#' Interface to the g:Profiler tool for finding enrichments in gene lists. Organism names are 
+#' constructed by concatenating the first letter of the name and the family name. Example: human - 
+#' 'hsapiens', mouse - 'mmusculus'. If requesting PNG output, the request is directed to the g:GOSt 
+#' tool in case 'query' is a vector and the g:Cocoa (compact view of multiple queries) tool in case 
+#' 'query' is a list. PNG output can fail (return FALSE) in case the input query is too large. In 
+#' such case, it is advisable to fall back to a non-image request.
 #'
 #' @param organism organism name.
-#' @param query list of gene IDs or a list of such lists.
+#' @param query vector of gene IDs or a list of such vectors.
 #' @param ordered_query in case output gene lists are ranked this option may be used
 #' to get GSEA style p-values.
 #' @param significant whether all or only statistically significant results should be 
@@ -93,12 +110,17 @@ gorth <- function(
 #' @param domain_size statistical domain size, one of "annotated", "known".
 #' @param custom_bg vector of gene names to use as a statistical background.
 #' @param numeric_ns namespace to use for fully numeric IDs. 
-#' @return Data frame with the enrichment analysis results. If the input consisted of several lists the corresponding list is indicated with a variable 'query number'.
+#' @param png_fn request the result as PNG image and write it to png_fn.
+#' @return A data frame with the enrichment analysis results. If the input consisted 
+#' of several lists the corresponding list is indicated with a variable 'query number'.
+#' When requesting a PNG image, either TRUE or FALSE, depending on whether a non-empty result 
+#' was received and a file written or not, respectively. 
 #' @references  J. Reimand, M. Kull, H. Peterson, J. Hansen, J. Vilo: g:Profiler - a web-based toolset for functional profiling of gene lists from large-scale experiments (2007) NAR 35 W193-W200
 #' @author  Juri Reimand <jyri.reimand@@ut.ee>, Raivo Kolde <rkolde@@gmail.com>, Tambet Arak <tambet.arak@@gmail.com>
 #' @examples
 #' gprofiler(c("Klf4", "Pax5", "Sox2", "Nanog"), organism = "mmusculus")
 #' @export
+
 gprofiler <- function(
 	query, 
 	organism='hsapiens', 	
@@ -112,21 +134,31 @@ gprofiler <- function(
 	hier_filtering="none",
 	domain_size="annotated",
 	custom_bg="",	
-	numeric_ns = ""	
-) {
-	my_url <- "http://biit.cs.ut.ee/gprofiler/gcocoa.cgi"
+	numeric_ns = "",
+	png_fn = NULL
+) {	
 	query_url = ""
+	my_url = paste(gp_globals$base_url, "gcocoa.cgi", sep="")
+	wantpng = ifelse(is.character(png_fn), T, F)
+	output_type = ifelse(wantpng, "mini_png", "mini")
 	
 	# Query
 
 	if (is.list(query)) {
+		qnames = names(query)
+		
 		for (i in 1:length(query)) {
-			query_url <- paste(sep="\n", query_url, paste("> query", i), paste(query[[i]], collapse=" "))
+			cname = paste("> query", i)
+			if (!is.null(qnames) && nchar(qnames[i]) > 0)
+				cname = paste(">", qnames[i])
+			query_url <- paste(sep="\n", query_url, cname, paste(query[[i]], collapse=" "))
 		}
 	} else if (is.vector(query)) {
-		query_url <- paste(query, collapse=" ")
+		query_url <- paste(query, collapse=" ")		
+		if (wantpng)
+			my_url = paste(gp_globals$base_url, "index.cgi", sep="")		
 	} else {
-		print("ERROR missing query")
+		warning("Missing query")
 		return()
 	}
 	
@@ -161,17 +193,18 @@ gprofiler <- function(
 	
 	if (max_set_size < 0) max_set_size = 0
 	
-	rcurl_opts = RCurl::curlOptions(useragent = "gProfileR")
-	raw_query <- RCurl::postForm(my_url, .opts = rcurl_opts,
+	# HTTP request
+	
+	raw_query <- RCurl::postForm(my_url, .opts = gp_globals$rcurl_opts,
 		organism=organism, 
 		query=query_url, 
-		output='mini', 		
+		output=output_type, 		
 		analytical="1", 
 		sort_by_structure="1",
 		ordered_query = ifelse(ordered_query, "1", "0"),
 		significant = ifelse(significant, "1", "0"),
 		no_iea = ifelse(exclude_iea, "1", "0"),
-		region_query = ifelse(region_query, "1", "0"),		
+		as_ranges = ifelse(region_query, "1", "0"),		
 		user_thr = as.character(max_p_value),
 		max_set_size = as.character(max_set_size),
 		threshold_algo = correction_method,
@@ -181,6 +214,29 @@ gprofiler <- function(
 		custbg = custom_bg,
 		prefix = numeric_ns
 	)
+	
+	# Requested PNG, write to disk and return
+
+	if (wantpng) {	
+		pngv = as.vector(raw_query)
+		
+		if (length(raw_query) == 0)	
+			return(F)
+		if (!isTRUE(all.equal(head(pngv, 8), gp_globals$png_magic))) { # check PNG magic number
+			warning(paste(
+				"Received non-PNG data, but PNG output requested. Please report this error",
+				"with the appropriate details to the package maintainer"
+			));
+			return(F);
+		}
+		
+		conn = file(png_fn, "wb")	
+		writeBin(pngv, conn, useBytes = T)
+		close(conn)
+		return(T);
+	}
+	
+	# Requested text
 	
 	split_query <- unlist(strsplit(raw_query, split="\n"))
 	
@@ -196,7 +252,7 @@ gprofiler <- function(
 	
 	if(length(split_query) > 0){
 		conn <- textConnection(paste(split_query, collapse = "\n"))
-		split_query <- read.table(conn, sep = "\t", quote = "")
+		split_query <- read.table(conn, sep = "\t", quote = "", stringsAsFactors = F)
 		close(conn)
 	}
 	else{
@@ -236,11 +292,9 @@ gprofiler <- function(
 #' @references  J. Reimand, M. Kull, H. Peterson, J. Hansen, J. Vilo: g:Profiler - a web-based toolset for functional profiling of gene lists from large-scale experiments (2007) NAR 35 W193-W200
 #' @author  Juri Reimand <jyri.reimand@@ut.ee>, Raivo Kolde <rkolde@@gmail.com>, Tambet Arak <tambet.arak@@gmail.com>
 #' @examples
-#' gconvert(c("Klf4", "Pax5", "Sox2", "Nanog"), organism = "mmusculus")
-#' 
-#' # Get all mouse Cell cycle genes 
-#' gconvert(c("GO:0007049"), organism = "mmusculus")
+#' gconvert(c("POU5F1", "SOX2", "NANOG"), organism = "hsapiens", target="AFFY_HG_U133_PLUS_2")
 #' @export
+
 gconvert = function(
 	query,
 	organism = "hsapiens",
@@ -250,7 +304,7 @@ gconvert = function(
 	df = T
 ) {
 	
-	url = "http://biit.cs.ut.ee/gprofiler/gconvert.cgi"
+	url = paste(gp_globals$base_url, "gconvert.cgi", sep="")		
 	field = 4
 
 	if (target == "DESC") {
@@ -258,8 +312,7 @@ gconvert = function(
 		target = "ENSG"
 	}
 
-	rcurl_opts = RCurl::curlOptions(useragent = "gProfileR")
-	raw_query <- RCurl::postForm(url, .opts = rcurl_opts,
+	raw_query <- RCurl::postForm(url, .opts = gp_globals$rcurl_opts,
 		organism=organism, 
 		output='mini', 
 		query=paste(query, collapse="+"), 
@@ -278,13 +331,13 @@ gconvert = function(
 	if (length(empty_lines)>0) {
 		split_query = split_query[-empty_lines]
 	}
-
+	
 	split_query = t(as.data.frame(strsplit(split="\t", split_query)))
 	rownames(split_query) = c()	
 	resulting_mapping = list()
-	
+
 	if (nrow(split_query)) {
-		for (id in unique(toupper(query))) {
+		for (id in unique(split_query[,2])) {
 			my_map = split_query[split_query[,2]==id,,drop=F][,field]
 			my_map = my_map[my_map != "N/A"]
 			resulting_mapping[[id]] = my_map
@@ -292,11 +345,34 @@ gconvert = function(
 	}
 	
 	if(df){
-		resulting_mapping <- plyr::ldply(resulting_mapping, function(x) data.frame(Target = x))
+		resulting_mapping <- plyr::ldply(resulting_mapping, function(x) data.frame(Target = x, stringsAsFactors = F))
 	}
 	
 	return(resulting_mapping)
 }
 
+#' Get current user agent string.
+#' 
+#' Get the HTTP User-Agent string.
+#'
+#' @export
 
+get_user_agent = function() {
+	gp_globals$rcurl_opts$useragent
+}
 
+#' Set custom user agent string.
+#' 
+#' Set the HTTP User-Agent string. Useful for overriding the default user agent for
+#' packages that depend on gProfileR functionality.
+#'
+#' @param ua the user agent string.
+#' @param append logical indicating whether to append the passed string to the default user agent string.
+#' @export
+
+set_user_agent = function(ua, append = F) {	
+	rco = gp_globals$rcurl_opts
+	rco$useragent = ifelse(
+		append, paste(rco$useragent, ua, sep=""), ua)
+	assign("rcurl_opts", rco, envir=gp_globals)
+}

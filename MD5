@@ -1,6 +1,9 @@
-33f338c1343a224c3004d2f07bc17fe4 *DESCRIPTION
-e9a407c892de029c40b2587fda85fa77 *NAMESPACE
-7ff7605b07fad3e2363e93b902ea11af *R/gProfileR.R
-db6446338dd3e5427f41a3f1f307005f *man/gconvert.Rd
+b984b39d65600a7e399cb87e645b92ad *ChangeLog
+46bbe16952d5c9054a5eeb55cdd1c230 *DESCRIPTION
+67a4a293b47f08f49d6f6b6e0b6670dc *NAMESPACE
+ad751f47a6f44663c9aa28e2a037fd60 *R/gProfileR.R
+9104af738debe360a47015b27d97527b *man/gconvert.Rd
+d9537fc28406b4732281191f3d1ed5fb *man/get-sub-user-sub-agent.Rd
 6731a119d46db7711a1aa2f0f438d744 *man/gorth.Rd
-5bdd29aa699e82d4c44f085966dc8775 *man/gprofiler.Rd
+d093d369bade550e744807c2ce99d303 *man/gprofiler.Rd
+79738f0bb2342856ea2feade794e7294 *man/set-sub-user-sub-agent.Rd

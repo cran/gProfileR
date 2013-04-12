@@ -1,3 +1,5 @@
 export(gorth)
 export(gprofiler)
 export(gconvert)
+export(get_user_agent)
+export(set_user_agent)
