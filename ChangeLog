@@ -1,4 +1,18 @@
 
+v0.5.3
+
+- Added the src_filter parameter to gprofiler(), for specifying a subset of
+  data sources.
+
+v0.5.2
+
+- Added the include_graph parameter to gprofiler(), for requesting inclusion
+  of network results.
+
+v0.5.1
+
+- Added the no_isects parameter to gprofiler(), speeding up large queries.
+
 v0.5
 - Improved API consistency - the parameters filter_na and mthreshold are now
   available in both gorth() and gconvert(); the result structures of said

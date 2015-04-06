@@ -42,11 +42,23 @@ gp_globals$base_url =
 #' @param domain_size statistical domain size, one of "annotated", "known".
 #' @param custom_bg vector of gene names to use as a statistical background.
 #' @param numeric_ns namespace to use for fully numeric IDs. 
+#' @param no_isects do not return intersections between query and term, significantly 
+#' faster for large queries.
 #' @param png_fn request the result as PNG image and write it to png_fn.
+#' @param include_graph request inclusion of network data with the result.
+#' @param src_filter a vector of data sources to use. Currently, these include 
+#'  GO (GO:BP, GO:MF, GO:CC to select a particular GO branch), KEGG, REAC, TF, 
+#'  MI, CORUM, HP. Please see the g:GOSt web tool for the comprehensive list 
+#'  and details on incorporated data sources.
 #' @return A data frame with the enrichment analysis results. If the input
 #' consisted of several lists the corresponding list is indicated with a variable
 #' 'query number'.  When requesting a PNG image, either TRUE or FALSE, depending on
 #' whether a non-empty result was received and a file written or not, respectively.
+#' If 'include_graph' is set, the return value may include the attribute 'networks', 
+#' containing a list of all network sources, each in turn containing a list of graph edges.
+#' The edge structure is a list containing the two interacting symbols and two boolean  
+#' values (in that order), indicating whether the first or second interactor is part of 
+#' the input query (core nodes).
 #' @references  J. Reimand, M. Kull, H. Peterson, J. Hansen, J. Vilo: g:Profiler -
 #' a web-based toolset for functional profiling of gene lists from large-scale
 #' experiments (2007) NAR 35 W193-W200
@@ -68,15 +80,18 @@ gprofiler <- function(
 	correction_method="analytical",
 	hier_filtering="none",
 	domain_size="annotated",
-	custom_bg="",	
+	custom_bg="",
 	numeric_ns = "",
-	png_fn = NULL
+	no_isects = F,
+	png_fn = NULL,
+	include_graph = F,
+	src_filter = NULL
 ) {	
 	query_url = ""
 	my_url = paste(gp_globals$base_url, "gcocoa.cgi", sep="")
 	wantpng = ifelse(is.character(png_fn), T, F)
 	output_type = ifelse(wantpng, "mini_png", "mini")
-	
+
 	# Query
 
 	if (is.list(query)) {
@@ -130,7 +145,7 @@ gprofiler <- function(
 	
 	# HTTP request
 	
-	raw_query <- RCurl::postForm(my_url, .opts = gp_globals$rcurl_opts,
+	query_params = list(
 		organism=organism, 
 		query=query_url, 
 		output=output_type, 		
@@ -139,7 +154,8 @@ gprofiler <- function(
 		ordered_query = ifelse(ordered_query, "1", "0"),
 		significant = ifelse(significant, "1", "0"),
 		no_iea = ifelse(exclude_iea, "1", "0"),
-		as_ranges = ifelse(region_query, "1", "0"),		
+		as_ranges = ifelse(region_query, "1", "0"),
+		omit_metadata = ifelse(include_graph, "0", "1"),
 		user_thr = as.character(max_p_value),
 		max_set_size = as.character(max_set_size),
 		threshold_algo = correction_method,
@@ -147,7 +163,19 @@ gprofiler <- function(
 		domain_size_type = domain_size,
 		custbg_file = "",
 		custbg = custom_bg,
-		prefix = numeric_ns
+		prefix = numeric_ns,
+		no_isects = ifelse(no_isects, "1", "0")
+	)
+	
+	if (!is.null(src_filter)) {
+		for (i in as.vector(src_filter))
+			query_params[paste("sf_", i, sep="")] = "1"
+	}		
+	
+	raw_query <- RCurl::postForm(
+		my_url,
+		.opts = gp_globals$rcurl_opts,
+		.params = query_params
 	)
 	
 	# Requested PNG, write to disk and return
@@ -174,8 +202,31 @@ gprofiler <- function(
 	# Requested text
 	
 	split_query <- unlist(strsplit(raw_query, split="\n"))
-	
 	commented_lines <- grep("^#", split_query)
+
+	# Interactions, later saved in an attribute
+	
+	if (include_graph) {
+		edges <- grep("BIOGRID INTERACTION", split_query[commented_lines], value=T)
+		re <- "\\S+\\s+\\S+$"
+		m <- regexpr(re, edges, perl=T);
+		edges <- strsplit(substr(edges, m, m+attr(m, "match.length")), '\\s+')
+		
+		is_in_core <- function(x) {
+			incore <- c(F, F);
+			incore[grep("\\*$", x, perl=T)] = T
+			x <- sub("\\*$", "", x, perl=T)
+			x <- list(x[[1]], x[[2]], incore[[1]], incore[[2]])			
+			return(x)
+		}
+		
+		edges <- lapply(edges, is_in_core)
+		edges <- list(edges)
+		names(edges) <- c("BIOGRID")	
+	}
+	
+	# Parse main result body
+	
 	if (length(commented_lines)>0) {
 		split_query <- split_query[-commented_lines]
 	}
@@ -198,7 +249,7 @@ gprofiler <- function(
 	colnames(split_query) <- c(
 		"query.number", "significant", "p.value", 
 		"term.size", "query.size", "overlap.size", 
-		"precision", "recall", "term.id", 
+		"recall", "precision", "term.id", 
 		"domain", "subgraph.number", "term.name",
 		"relative.depth", "intersection"
 	)
@@ -207,6 +258,10 @@ gprofiler <- function(
 	
 	if(is.list(query) & !is.null(names(query))) {
 		split_query$query.number <- names(query)[split_query$query.number]
+	}
+	
+	if (include_graph && length(edges)) {
+		attr(split_query, "networks") <- edges
 	}
 	
 	return(split_query)
