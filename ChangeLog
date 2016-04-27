@@ -1,4 +1,15 @@
 
+v0.6.1
+
+- Fixed imports and undefined globals for CRAN, no changes for end users.
+
+v0.6
+
+- Added the underrep, evcodes, min_set_size and min_isect_size parameters to
+  gprofiler().
+- Removed the no_isects parameter to gprofiler(), as this is no longer needed
+  due to backend optimization.
+
 v0.5.3
 
 - Added the src_filter parameter to gprofiler(), for specifying a subset of
