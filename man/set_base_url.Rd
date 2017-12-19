@@ -10,7 +10,6 @@ set_base_url(url)
 \item{url}{the base URL.}
 }
 \description{
-Set the base URL. Useful for overriding the default URL (http://biit.cs.ut.ee/gprofiler)
+Set the base URL. Useful for overriding the default URL (https://biit.cs.ut.ee/gprofiler)
 with the bleeding-edge beta or an archived version.
 }
-

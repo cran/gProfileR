@@ -42,15 +42,16 @@ uninformative) one can set a threshold for the number of results. The program
 tries to find the most informative by selecting the most popular ones.
 }
 \examples{
-gorth(c("Klf4","Pax5","Sox2","Nanog"), source_organism="mmusculus", target_organism="hsapiens")
+\dontrun{
+ gorth(c("Klf4","Pax5","Sox2","Nanog"), source_organism="mmusculus", target_organism="hsapiens")
 }
-\author{
-Raivo Kolde <rkolde@gmail.com>, Juri Reimand <juri.reimand@ut.ee>,
-Tambet Arak <tambet.arak@gmail.com>
 }
 \references{
 J. Reimand, M. Kull, H. Peterson, J.  Hansen, J. Vilo: g:Profiler
 -- a web-based toolset for functional profiling of gene lists from large-scale
 experiments (2007) NAR 35 W193-W200
 }
-
+\author{
+Raivo Kolde <rkolde@gmail.com>, Juri Reimand <juri.reimand@ut.ee>,
+Tambet Arak <tambet.arak@gmail.com>
+}

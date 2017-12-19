@@ -15,4 +15,3 @@ set_user_agent(ua, append = F)
 Set the HTTP User-Agent string. Useful for overriding the default user agent for
 packages that depend on gProfileR functionality.
 }
-

@@ -9,4 +9,3 @@ get_base_url()
 \description{
 Get the base URL.
 }
-

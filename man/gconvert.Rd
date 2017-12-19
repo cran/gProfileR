@@ -36,15 +36,16 @@ concatenating the first letter of the name and the family name. Example: human
 - 'hsapiens', mouse - 'mmusculus'.
 }
 \examples{
-gconvert(c("POU5F1", "SOX2", "NANOG"), organism = "hsapiens", target="AFFY_HG_U133_PLUS_2")
+\dontrun{
+ gconvert(c("POU5F1", "SOX2", "NANOG"), organism = "hsapiens", target="AFFY_HG_U133_PLUS_2")
 }
-\author{
-Juri Reimand <jyri.reimand@ut.ee>, Raivo Kolde <rkolde@gmail.com>,
-Tambet Arak <tambet.arak@gmail.com>
 }
 \references{
 J. Reimand, M. Kull, H. Peterson, J.  Hansen, J. Vilo: g:Profiler
 - a web-based toolset for functional profiling of gene lists from large-scale
 experiments (2007) NAR 35 W193-W200
 }
-
+\author{
+Juri Reimand <jyri.reimand@ut.ee>, Raivo Kolde <rkolde@gmail.com>,
+Tambet Arak <tambet.arak@gmail.com>
+}

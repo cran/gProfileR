@@ -12,7 +12,9 @@ gprofiler(query, organism = "hsapiens", ordered_query = F,
   numeric_ns = "", png_fn = NULL, include_graph = F, src_filter = NULL)
 }
 \arguments{
-\item{query}{vector of gene IDs or a list of such vectors.}
+\item{query}{vector of gene IDs or a list of such vectors. In the latter case,
+the query is directed to g:Cocoa, which yields a different graphical output 
+if requested with the \code{png_fn} parameter.}
 
 \item{organism}{organism name.}
 
@@ -85,15 +87,16 @@ list. PNG output can fail (return FALSE) in case the input query is too large.
 In such case, it is advisable to fall back to a non-image request.
 }
 \examples{
+\dontrun{
  gprofiler(c("Klf4", "Pax5", "Sox2", "Nanog"), organism = "mmusculus")
 }
-\author{
-Juri Reimand <jyri.reimand@ut.ee>, Raivo Kolde <rkolde@gmail.com>,
- Tambet Arak <tambet.arak@gmail.com>
 }
 \references{
 J. Reimand, M. Kull, H. Peterson, J. Hansen, J. Vilo: g:Profiler -
  a web-based toolset for functional profiling of gene lists from large-scale
  experiments (2007) NAR 35 W193-W200
 }
-
+\author{
+Juri Reimand <jyri.reimand@ut.ee>, Raivo Kolde <rkolde@gmail.com>,
+ Tambet Arak <tambet.arak@gmail.com>
+}

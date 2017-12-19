@@ -1,4 +1,9 @@
 
+v0.6.2
+
+- Fixed the base URL: migrated to HTTPS.
+- Fixed swapped column headers for precision and recall.
+
 v0.6.1
 
 - Fixed imports and undefined globals for CRAN, no changes for end users.

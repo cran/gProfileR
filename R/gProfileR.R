@@ -11,7 +11,7 @@ gp_globals$rcurl_opts =
 gp_globals$png_magic =
 	as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))
 gp_globals$base_url =
-	"http://biit.cs.ut.ee/gprofiler/"
+	"https://biit.cs.ut.ee/gprofiler/"
 
 #' Annotate gene list functionally.
 #'
@@ -24,7 +24,9 @@ gp_globals$base_url =
 #' In such case, it is advisable to fall back to a non-image request.
 #'
 #' @param organism organism name.
-#' @param query vector of gene IDs or a list of such vectors.
+#' @param query vector of gene IDs or a list of such vectors. In the latter case,
+#'  the query is directed to g:Cocoa, which yields a different graphical output 
+#'  if requested with the \code{png_fn} parameter.
 #' @param ordered_query in case output gene lists are ranked this option may be
 #'  used to get GSEA style p-values.
 #' @param significant whether all or only statistically significant results should
@@ -70,7 +72,9 @@ gp_globals$base_url =
 #' @author  Juri Reimand <jyri.reimand@@ut.ee>, Raivo Kolde <rkolde@@gmail.com>,
 #'  Tambet Arak <tambet.arak@@gmail.com>
 #' @examples
+#' \dontrun{
 #'  gprofiler(c("Klf4", "Pax5", "Sox2", "Nanog"), organism = "mmusculus")
+#' }
 #' @export
 
 gprofiler <- function(
@@ -259,7 +263,7 @@ gprofiler <- function(
 	col_names <- c(
 		"query.number", "significant", "p.value",
 		"term.size", "query.size", "overlap.size",
-		"recall", "precision", "term.id",
+		"precision", "recall", "term.id",
 		"domain", "subgraph.number", "term.name",
 		"relative.depth", "intersection"
 	)
@@ -306,7 +310,9 @@ gprofiler <- function(
 #' @author  Juri Reimand <jyri.reimand@@ut.ee>, Raivo Kolde <rkolde@@gmail.com>,
 #' Tambet Arak <tambet.arak@@gmail.com>
 #' @examples
-#' gconvert(c("POU5F1", "SOX2", "NANOG"), organism = "hsapiens", target="AFFY_HG_U133_PLUS_2")
+#' \dontrun{
+#'  gconvert(c("POU5F1", "SOX2", "NANOG"), organism = "hsapiens", target="AFFY_HG_U133_PLUS_2")
+#' }
 #' @export
 
 gconvert = function(
@@ -382,7 +388,9 @@ gconvert = function(
 #' @author  Raivo Kolde <rkolde@@gmail.com>, Juri Reimand <juri.reimand@@ut.ee>,
 #' Tambet Arak <tambet.arak@@gmail.com>
 #' @examples
-#' gorth(c("Klf4","Pax5","Sox2","Nanog"), source_organism="mmusculus", target_organism="hsapiens")
+#' \dontrun{
+#'  gorth(c("Klf4","Pax5","Sox2","Nanog"), source_organism="mmusculus", target_organism="hsapiens")
+#' }
 #' @export
 
 gorth <- function(
@@ -473,7 +481,7 @@ get_base_url = function() {
 
 #' Set the base URL.
 #'
-#' Set the base URL. Useful for overriding the default URL (http://biit.cs.ut.ee/gprofiler)
+#' Set the base URL. Useful for overriding the default URL (https://biit.cs.ut.ee/gprofiler)
 #' with the bleeding-edge beta or an archived version.
 #'
 #' @param url the base URL.
@@ -481,11 +489,11 @@ get_base_url = function() {
 
 set_base_url = function(url) {
 	url = as.character(url)
-	schema = substr(url, 1, 7)
+	schema = substr(url, 1, 4)
 	suffix = substr(url, nchar(url), nchar(url))
 
-	if (schema != "http://")
-		stop("The schema portion of the URL must be \"http://\"")
+	if (schema != "http")
+		stop("The URL must be absolute and use the HTTP(S) schema")
 	if (suffix != "/")
 		url = paste(url, "/", sep="")
 

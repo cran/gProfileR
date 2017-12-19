@@ -9,4 +9,3 @@ get_user_agent()
 \description{
 Get the HTTP User-Agent string.
 }
-
