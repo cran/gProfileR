@@ -1,5 +1,5 @@
 Package: gProfileR
-Version: 0.6.2
+Version: 0.6.3
 License: GPL (>= 2)
 Description: Functional enrichment analysis, gene identifier conversion and
     mapping homologous genes across related organisms via the 'g:Profiler' toolkit
@@ -13,6 +13,6 @@ Imports: RCurl, plyr, utils
 Collate: 'gProfileR.R'
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2017-12-19 13:40:39 UTC; inkuzmin
+Packaged: 2018-01-30 16:12:38 UTC; inkuzmin
 Repository: CRAN
-Date/Publication: 2017-12-19 18:16:25 UTC
+Date/Publication: 2018-01-30 16:30:11 UTC

@@ -6,8 +6,16 @@ gp_globals$version =
 		installed.packages()["gProfileR", "Version"],
 		error = function(e) { return("unknown_version") }
 	);
+
+# Set SSL vertion to TLSv1_2 with fallback to TLSv1_1
+# CURL_SSLVERSION_SSLv3 is not used due to the SSLv3 vulnerability <https://access.redhat.com/articles/1232123>
+# CURL_SSLVERSION_TLSv1_3 is not widespread enough to have a built-in LibreSSL support yet.
+# (curl's authors may decide to change it at some point, so links to the source are provided.)
+gp_globals$CURL_SSLVERSION_TLSv1_1 <- 5L # <https://github.com/curl/curl/blob/master/include/curl/curl.h#L1925>
+gp_globals$CURL_SSLVERSION_TLSv1_2 <- 6L # <https://github.com/curl/curl/blob/master/include/curl/curl.h#L1926>
+  
 gp_globals$rcurl_opts =
-	RCurl::curlOptions(useragent = paste("gProfileR/", gp_globals$version, sep=""))
+	RCurl::curlOptions(useragent = paste("gProfileR/", gp_globals$version, sep=""), sslversion = gp_globals$CURL_SSLVERSION_TLSv1_2)
 gp_globals$png_magic =
 	as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))
 gp_globals$base_url =
@@ -27,6 +35,7 @@ gp_globals$base_url =
 #' @param query vector of gene IDs or a list of such vectors. In the latter case,
 #'  the query is directed to g:Cocoa, which yields a different graphical output 
 #'  if requested with the \code{png_fn} parameter.
+#' @param sort_by_structure wheter hierarchical sorting is enabled or disabled.
 #' @param ordered_query in case output gene lists are ranked this option may be
 #'  used to get GSEA style p-values.
 #' @param significant whether all or only statistically significant results should
@@ -80,6 +89,7 @@ gp_globals$base_url =
 gprofiler <- function(
 	query,
 	organism = "hsapiens",
+	sort_by_structure = T,
 	ordered_query = F,
 	significant = T,
 	exclude_iea = F,
@@ -162,7 +172,7 @@ gprofiler <- function(
 		query = query_url,
 		output = output_type,
 		analytical = "1",
-		sort_by_structure = "1",
+		sort_by_structure = ifelse(sort_by_structure, "1", "0"),
 		ordered_query = ifelse(ordered_query, "1", "0"),
 		significant = ifelse(significant, "1", "0"),
 		no_iea = ifelse(exclude_iea, "1", "0"),
@@ -281,6 +291,12 @@ gprofiler <- function(
 
 	if (include_graph && length(edges)) {
 		attr(split_query, "networks") <- edges
+	}
+	
+	# If hierarchical sorting is disabled we need to sort the result by p.value
+	if (!sort_by_structure) {
+	  split_query <- split_query[order(split_query$p.value),]
+	  rownames(split_query) <- NULL # reindex results
 	}
 
 	return(split_query)
@@ -469,6 +485,43 @@ set_user_agent = function(ua, append = F) {
 	rco$useragent = ifelse(
 		append, paste(rco$useragent, ua, sep=""), ua)
 	assign("rcurl_opts", rco, envir=gp_globals)
+}
+
+#' Get the TLS version for SSL
+#'
+#' @export
+
+get_tls_version = function() {
+  v = gp_globals$rcurl_opts$sslversion
+  if (v == gp_globals$CURL_SSLVERSION_TLSv1_2) {
+    "1.2"
+  }
+  else if (v == gp_globals$CURL_SSLVERSION_TLSv1_1) {
+    "1.1"
+  }
+}
+
+#' Set the TLS version to use for SSL
+#' 
+#' Set the TLS version. Could be useful at environments where SSL was built without TLS 1.2 support
+#'
+#' @param v version: "1.2" (default), "1.1" (fallback)
+#' @export
+
+set_tls_version = function(v) {
+  if (v == "1.1") {
+    rco = gp_globals$rcurl_opts
+    rco$sslversion = gp_globals$CURL_SSLVERSION_TLSv1_1
+    assign("rcurl_opts", rco, envir=gp_globals)
+  }
+  else if (v == "1.2") {
+    rco = gp_globals$rcurl_opts
+    rco$sslversion = gp_globals$CURL_SSLVERSION_TLSv1_2
+    assign("rcurl_opts", rco, envir=gp_globals)
+  }
+  else {
+    print('Only "1.1" (fallback) or "1.2" (default) are allowed to be passed as a parameter.')
+  }
 }
 
 #' Get the base URL.

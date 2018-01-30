@@ -1,3 +1,10 @@
+v0.6.3
+
+- Exposed an interface to set particular SSL version for RCurl,
+  added the (get|set)_tls_version() functions.
+- Set default SSL version for RCurl to TLSv1_2.
+- Added the sort_by_structure parameter to gprofiler(), for specifying an order of
+  returned results.
 
 v0.6.2
 
