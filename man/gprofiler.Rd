@@ -18,7 +18,7 @@ if requested with the \code{png_fn} parameter.}
 
 \item{organism}{organism name.}
 
-\item{sort_by_structure}{wheter hierarchical sorting is enabled or disabled.}
+\item{sort_by_structure}{whether hierarchical sorting is enabled or disabled.}
 
 \item{ordered_query}{in case output gene lists are ranked this option may be
 used to get GSEA style p-values.}

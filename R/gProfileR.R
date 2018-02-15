@@ -35,7 +35,7 @@ gp_globals$base_url =
 #' @param query vector of gene IDs or a list of such vectors. In the latter case,
 #'  the query is directed to g:Cocoa, which yields a different graphical output 
 #'  if requested with the \code{png_fn} parameter.
-#' @param sort_by_structure wheter hierarchical sorting is enabled or disabled.
+#' @param sort_by_structure whether hierarchical sorting is enabled or disabled.
 #' @param ordered_query in case output gene lists are ranked this option may be
 #'  used to get GSEA style p-values.
 #' @param significant whether all or only statistically significant results should

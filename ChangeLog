@@ -1,3 +1,7 @@
+v0.6.4
+
+- Added BugReports field to the DESCRIPTION.
+
 v0.6.3
 
 - Exposed an interface to set particular SSL version for RCurl,
