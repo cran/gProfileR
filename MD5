@@ -1,13 +1,13 @@
-467405eece9d965191e0c6726793995b *ChangeLog
-30bd8ffefd21b969139c64c0454a1c2b *DESCRIPTION
+285e40dcdb06d39b9247a07707154bdb *ChangeLog
+115c13c8773a1e2b1d37ef0e8deb9095 *DESCRIPTION
 ab2aabc8cbe758a68abe45946d2faa93 *NAMESPACE
-b2fab42f663588cd97cc29f4183ffcf4 *R/gProfileR.R
+8be886e1126b0c36c74a489009d0b19b *R/gProfileR.R
 e8501f4222aab2ddf42a8a2b977653cf *man/gconvert.Rd
 5a306e1a9a1fe4e9503f0b2a1dd80772 *man/get_base_url.Rd
 45cffd2a6aa68acde8a46430203ba041 *man/get_tls_version.Rd
 576b1a87f11d342828520a242b2d6140 *man/get_user_agent.Rd
 827caee5166eec33a7d20360c630665a *man/gorth.Rd
 d92797080da03c8038fd54243be231db *man/gprofiler.Rd
-c6e07f8f8768684e77d3964647019540 *man/set_base_url.Rd
+56c5f01d0a2eb361a464bfca71ed2a72 *man/set_base_url.Rd
 bf75e293143e3d2e714fde1f06d65a4e *man/set_tls_version.Rd
 40abfeca2230f49f1c0e5c30eb7502ff *man/set_user_agent.Rd

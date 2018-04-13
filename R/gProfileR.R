@@ -19,7 +19,7 @@ gp_globals$rcurl_opts =
 gp_globals$png_magic =
 	as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))
 gp_globals$base_url =
-	"https://biit.cs.ut.ee/gprofiler/"
+	"http://biit.cs.ut.ee/gprofiler/"
 
 #' Annotate gene list functionally.
 #'
@@ -534,7 +534,7 @@ get_base_url = function() {
 
 #' Set the base URL.
 #'
-#' Set the base URL. Useful for overriding the default URL (https://biit.cs.ut.ee/gprofiler)
+#' Set the base URL. Useful for overriding the default URL (http://biit.cs.ut.ee/gprofiler)
 #' with the bleeding-edge beta or an archived version.
 #'
 #' @param url the base URL.

@@ -1,3 +1,8 @@
+v0.6.5
+
+- Reverted the default URL to http://biit.cs.ut.ee/gprofiler/ as too many users had
+  access problems via https.
+
 v0.6.4
 
 - Added BugReports field to the DESCRIPTION.
