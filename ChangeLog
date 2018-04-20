@@ -1,3 +1,7 @@
+v0.6.6
+
+- Change BugReports link to http://biit.cs.ut.ee/gprofiler/contact.cgi
+
 v0.6.5
 
 - Reverted the default URL to http://biit.cs.ut.ee/gprofiler/ as too many users had
