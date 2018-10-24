@@ -260,6 +260,17 @@ gprofiler <- function(
 	if (length(empty_lines)>0) {
 		split_query <- split_query[-empty_lines]
 	}
+	
+	col_names <- c(
+	  "query.number", "significant", "p.value",
+	  "term.size", "query.size", "overlap.size",
+	  "precision", "recall", "term.id",
+	  "domain", "subgraph.number", "term.name",
+	  "relative.depth", "intersection"
+	)
+	if (evcodes)
+	  col_names <- append(col_names, "evidence.codes")
+	
 
 	if(length(split_query) > 0) {
 		conn <- textConnection(paste(split_query, collapse = "\n"))
@@ -267,18 +278,9 @@ gprofiler <- function(
 		close(conn)
 	}
 	else {
-		split_query <- as.data.frame(matrix(NA, 0, 14))
+		split_query <- as.data.frame(matrix(NA, 0, length(col_names)))
 	}
 	
-	col_names <- c(
-		"query.number", "significant", "p.value",
-		"term.size", "query.size", "overlap.size",
-		"precision", "recall", "term.id",
-		"domain", "subgraph.number", "term.name",
-		"relative.depth", "intersection"
-	)
-	if (evcodes)
-		col_names <- append(col_names, "evidence.codes")
 	
 	rownames(split_query) <- NULL
 	colnames(split_query) <- col_names
