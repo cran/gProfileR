@@ -1,7 +1,10 @@
 Package: gProfileR
-Version: 0.6.7
+Version: 0.6.8
 License: GPL (>= 2)
-Description: Functional enrichment analysis, gene identifier conversion and
+Description: This package has been deprecated and will not be updated. 
+    New users should use the package 'gprofiler2' (<https://CRAN.R-project.org/package=gprofiler2>)
+    for up-to-date data and improved functionality.
+    Functional enrichment analysis, gene identifier conversion and
     mapping homologous genes across related organisms via the 'g:Profiler' toolkit
     (<https://biit.cs.ut.ee/gprofiler/>).
 Title: Interface to the 'g:Profiler' Toolkit
@@ -12,8 +15,8 @@ BugReports: http://biit.cs.ut.ee/gprofiler/contact.cgi
 Depends: R (>= 2.10)
 Imports: RCurl, plyr, utils
 Collate: 'gProfileR.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2018-10-24 14:52:53 UTC; inkuzmin
+Packaged: 2019-09-06 14:17:01 UTC; inkuzmin
 Repository: CRAN
-Date/Publication: 2018-10-24 17:00:02 UTC
+Date/Publication: 2019-09-07 15:20:02 UTC

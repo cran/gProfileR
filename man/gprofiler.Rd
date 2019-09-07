@@ -5,11 +5,12 @@
 \title{Annotate gene list functionally.}
 \usage{
 gprofiler(query, organism = "hsapiens", sort_by_structure = T,
-  ordered_query = F, significant = T, exclude_iea = F, underrep = F,
-  evcodes = F, region_query = F, max_p_value = 1, min_set_size = 0,
-  max_set_size = 0, min_isect_size = 0, correction_method = "analytical",
-  hier_filtering = "none", domain_size = "annotated", custom_bg = "",
-  numeric_ns = "", png_fn = NULL, include_graph = F, src_filter = NULL)
+  ordered_query = F, significant = T, exclude_iea = F,
+  underrep = F, evcodes = F, region_query = F, max_p_value = 1,
+  min_set_size = 0, max_set_size = 0, min_isect_size = 0,
+  correction_method = "analytical", hier_filtering = "none",
+  domain_size = "annotated", custom_bg = "", numeric_ns = "",
+  png_fn = NULL, include_graph = F, src_filter = NULL)
 }
 \arguments{
 \item{query}{vector of gene IDs or a list of such vectors. In the latter case,

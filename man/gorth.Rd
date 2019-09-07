@@ -4,9 +4,9 @@
 \alias{gorth}
 \title{Find orthologs.}
 \usage{
-gorth(query, source_organism = "hsapiens", target_organism = "mmusculus",
-  region_query = F, numeric_ns = "", mthreshold = Inf, filter_na = T,
-  df = T)
+gorth(query, source_organism = "hsapiens",
+  target_organism = "mmusculus", region_query = F, numeric_ns = "",
+  mthreshold = Inf, filter_na = T, df = T)
 }
 \arguments{
 \item{query}{list of gene IDs to be translated.}

@@ -4,8 +4,9 @@
 \alias{gconvert}
 \title{Convert gene IDs.}
 \usage{
-gconvert(query, organism = "hsapiens", target = "ENSG", region_query = F,
-  numeric_ns = "", mthreshold = Inf, filter_na = T, df = T)
+gconvert(query, organism = "hsapiens", target = "ENSG",
+  region_query = F, numeric_ns = "", mthreshold = Inf,
+  filter_na = T, df = T)
 }
 \arguments{
 \item{query}{list of gene IDs.}
