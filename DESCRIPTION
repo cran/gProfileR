@@ -1,5 +1,5 @@
 Package: gProfileR
-Version: 0.6.8
+Version: 0.7.0
 License: GPL (>= 2)
 Description: This package has been deprecated and will not be updated. 
     New users should use the package 'gprofiler2' (<https://CRAN.R-project.org/package=gprofiler2>)
@@ -17,6 +17,6 @@ Imports: RCurl, plyr, utils
 Collate: 'gProfileR.R'
 RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2019-09-06 14:17:01 UTC; inkuzmin
+Packaged: 2019-11-04 16:04:57 UTC; inkuzmin
 Repository: CRAN
-Date/Publication: 2019-09-07 15:20:02 UTC
+Date/Publication: 2019-11-04 16:30:17 UTC

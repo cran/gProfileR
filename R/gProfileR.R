@@ -20,6 +20,8 @@ gp_globals$png_magic =
 	as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))
 gp_globals$base_url =
 	"http://biit.cs.ut.ee/gprofiler/"
+gp_globals$deprecation_note = "Please consider using the new package \"gprofiler2\". At the moment you are using a deprecated package relying on outdated data.
+  More information at https://biit.cs.ut.ee/gprofiler/page/r-new. Feel free to contact us at biit.support@ut.ee for further help."
 
 #' Annotate gene list functionally.
 #'
@@ -109,6 +111,10 @@ gprofiler <- function(
 	include_graph = F,
 	src_filter = NULL
 ) {
+  
+  # Deprecation note
+  warning(gp_globals$deprecation_note, call. = FALSE)
+  
 	query_url = ""
 	my_url = paste(gp_globals$base_url, "gcocoa.cgi", sep="")
 	wantpng = ifelse(is.character(png_fn), T, F)
@@ -343,6 +349,10 @@ gconvert = function(
 	filter_na = T,
 	df = T
 ) {
+  
+  # Deprecation note
+  warning(gp_globals$deprecation_note, call. = FALSE)
+  
 	url = paste(gp_globals$base_url, "gconvert.cgi", sep="")
 
 	raw_query <- RCurl::postForm(url, .opts = gp_globals$rcurl_opts,
@@ -421,6 +431,10 @@ gorth <- function(
 	filter_na = T,
 	df = T
 ){
+  
+  # Deprecation note
+  warning(gp_globals$deprecation_note, call. = FALSE)
+  
 	my_url = paste(gp_globals$base_url, "gorth.cgi", sep="")
 
 	if (length(query) == 0)
